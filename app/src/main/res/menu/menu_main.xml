@@ -18,5 +18,25 @@
         android:orderInCategory="100"
         android:title="About"
         app:showAsAction="never"/>
+		<item
+        android:id="@+id/action_darkmode"
+        android:orderInCategory="100"
+        android:title="DarkMode"
+        app:showAsAction="never"/>
+    <item
+        android:id="@+id/action_lightmode"
+        android:orderInCategory="100"
+        android:title="LightMode"
+        app:showAsAction="never"/>
+    <item
+        android:id="@+id/action_layout"
+        android:orderInCategory="100"
+        android:title="Layout1"
+        app:showAsAction="never"/>
+    <item
+        android:id="@+id/action_newlayout"
+        android:orderInCategory="100"
+        android:title="Layout2"
+        app:showAsAction="never"/>
 
 </menu>

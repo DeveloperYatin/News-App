@@ -3,6 +3,7 @@ package com.yatin.newsapp;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -17,6 +18,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.SearchView;
 import androidx.core.app.ActivityOptionsCompat;
 import androidx.core.util.Pair;
@@ -40,7 +42,7 @@ import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity implements  SwipeRefreshLayout.OnRefreshListener{
 
-    public static final String API_KEY = "your secret api key";
+    public static final String API_KEY = "aee363b4e3d6430cb988bdcbc4918870";//"your secret api key";
     private RecyclerView recyclerView;
     private RecyclerView.LayoutManager layoutManager;
     private List<Article> articles = new ArrayList<>();
@@ -52,6 +54,9 @@ public class MainActivity extends AppCompatActivity implements  SwipeRefreshLayo
     private ImageView errorImage;
     private TextView errorTitle, errorMessage;
     private Button btnRetry;
+
+    private String ModePref = "ModePref";
+    private SharedPreferences sharedPreferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,6 +74,17 @@ public class MainActivity extends AppCompatActivity implements  SwipeRefreshLayo
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setNestedScrollingEnabled(false);
 
+        sharedPreferences = getSharedPreferences(ModePref, Context.MODE_PRIVATE);
+        String mode = sharedPreferences.getString("Mode","LightMode");
+        if(mode.equals("LightMode")){
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+            Toast.makeText(MainActivity.this,"LightMode Enabled!!",Toast.LENGTH_LONG).show();
+        }
+        else{
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+            Toast.makeText(MainActivity.this,"DarkMode Enabled!!",Toast.LENGTH_LONG).show();
+        }
+
         onLoadingSwipeRefresh("");
 
         errorLayout = findViewById(R.id.errorLayout);
@@ -76,6 +92,8 @@ public class MainActivity extends AppCompatActivity implements  SwipeRefreshLayo
         errorTitle = findViewById(R.id.errorTitle);
         errorMessage = findViewById(R.id.errorMessage);
         btnRetry = findViewById(R.id.btnRetry);
+
+
 
     }
 
@@ -105,6 +123,8 @@ public class MainActivity extends AppCompatActivity implements  SwipeRefreshLayo
                     if (!articles.isEmpty()){
                         articles.clear();
                     }
+
+
 
                     articles = response.body().getArticle();
                     adapter = new Adapter(articles, MainActivity.this);
@@ -238,6 +258,44 @@ public class MainActivity extends AppCompatActivity implements  SwipeRefreshLayo
             Intent i = new Intent(Intent.ACTION_VIEW);
             i.setData(Uri.parse("https://yatin.htmlsave.net"));
             startActivity(i);
+            return true;
+        }
+
+        if (id == R.id.action_darkmode){
+            Toast.makeText(MainActivity.this,"DarkMode Enabled!!",Toast.LENGTH_LONG).show();
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putString("Mode","DarkMode");
+            editor.apply();
+            editor.commit();
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+            onLoadingSwipeRefresh("");
+            return true;
+        }
+
+        if (id == R.id.action_lightmode){
+            Toast.makeText(MainActivity.this,"LightMode Enabled!!",Toast.LENGTH_LONG).show();
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putString("Mode","LightMode");
+            editor.apply();
+            editor.commit();
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+            onLoadingSwipeRefresh("");
+            return true;
+        }
+        if (id == R.id.action_layout){
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putString("Layout","Layout1");
+            editor.apply();
+            editor.commit();
+            onLoadingSwipeRefresh("");
+            return true;
+        }
+        if (id == R.id.action_newlayout){
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putString("Layout","Layout2");
+            editor.apply();
+            editor.commit();
+            onLoadingSwipeRefresh("");
             return true;
         }
 

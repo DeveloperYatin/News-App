@@ -1,10 +1,12 @@
 package com.yatin.newsapp;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -30,6 +32,8 @@ public class Adapter extends RecyclerView.Adapter<Adapter.MyViewHolder>{
     private List<Article> articles;
     private Context context;
     private OnItemClickListener onItemClickListener;
+    private SharedPreferences sharedPreferences;
+    private String ModePref = "ModePref";
 
 
     public Adapter(List<Article> articles, Context context) {
@@ -40,8 +44,17 @@ public class Adapter extends RecyclerView.Adapter<Adapter.MyViewHolder>{
     @NonNull
     @Override
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.item, parent, false);
-        return new MyViewHolder(view, onItemClickListener);
+        sharedPreferences = context.getSharedPreferences(ModePref, Context.MODE_PRIVATE);
+        String layout = sharedPreferences.getString("Layout","Layout1");
+        if(layout.equals("Layout1")){
+            View view = LayoutInflater.from(context).inflate(R.layout.item, parent, false);
+            return new MyViewHolder(view, onItemClickListener);
+        }
+        else{
+            View view = LayoutInflater.from(context).inflate(R.layout.item2, parent, false);
+            return new MyViewHolder(view, onItemClickListener);
+        }
+
     }
 
     @Override
@@ -103,6 +116,7 @@ public class Adapter extends RecyclerView.Adapter<Adapter.MyViewHolder>{
         ProgressBar progressBar;
         OnItemClickListener onItemClickListener;
 
+
         public MyViewHolder(View itemView, OnItemClickListener onItemClickListener) {
 
             super(itemView);
@@ -116,6 +130,8 @@ public class Adapter extends RecyclerView.Adapter<Adapter.MyViewHolder>{
             time = itemView.findViewById(R.id.time);
             imageView = itemView.findViewById(R.id.img);
             progressBar = itemView.findViewById(R.id.prograss_load_photo);
+
+
 
             this.onItemClickListener = onItemClickListener;
 
